@@ -1,4 +1,4 @@
-![Design Patterns For Humans](https://cloud.githubusercontent.com/assets/11269635/23065273/1b7e5938-f515-11e6-8dd3-d0d58de6bb9a.png)
+![Patrones de diseño para humanos](https://cloud.githubusercontent.com/assets/11269635/23065273/1b7e5938-f515-11e6-8dd3-d0d58de6bb9a.png)
 
 ***
 <p align="center">
@@ -187,207 +187,207 @@ Se puede utilizar cuando hay un proceso generico en una clase pero  la subclase 
 🔨 Abstract Factory
 ----------------
 
-Ejemplo delmundo real
-> Extending our door example from Simple Factory. Based on your needs you might get a wooden door from a wooden door shop, iron door from an iron shop or a PVC door from the relevant shop. Plus you might need a guy with different kind of specialities to fit the door, for example a carpenter for wooden door, welder for iron door etc. As you can see there is a dependency between the doors now, wooden door needs carpenter, iron door needs a welder etc.
+Ejemplo del mundo real
+> Extendiendo nuestro ejemplo de Simple Factory acerca de puertas.Basandose en tus necesidades tu puedes obtener una puerta de madera  de una tienda de puertas de madera, Puerta de hierro de una tienda de hierro o una puerta de PVC de la tienda correspondiente. Puede que necesites un especialista que se adapte a los diferentes tipos de puerta, por ejemplo un carpintero para la puerta de madera un soldador para la puerta de metal etc. Como puedes ver hay una dependencia entre las puertas,Carpintero se necesita para la puerta de madera , soldador para la muerta de metal etc.
 
-In plain words
-> A factory of factories; a factory that groups the individual but related/dependent factories together without specifying their concrete classes. 
+En simples palabras
+> una fabrica de fabricas; una fabrica que agrupa las fábricas individuales pero relacionadas / dependientes, sin especificar la clase concreta. 
   
-Wikipedia says
-> The abstract factory pattern provides a way to encapsulate a group of individual factories that have a common theme without specifying their concrete classes
+Wikipedia dice
+> El pattern abstract factory proporciona una manera de encapsular un grupo de fábricas individuales que tienen un tema común sin especificar sus clases concretas
 
-**Programmatic Example**
+**Ejemplo de programación**
 
-Translating the door example above. First of all we have our `Door` interface and some implementation for it
+Traduciendo el ejemplo de puerta arriba. En primer lugar tenemos nuestra interfaz `Puerta` y alguna implementación para ello
 
 ```php
-interface Door {
-    public function getDescription();
+interface Puerta {
+    public function getDescripcion();
 }
 
-class WoodenDoor implements Door {
-    public function getDescription() {
-        echo 'I am a wooden door';
+class PuertaMadera implements Puerta {
+    public function getDescripcion() {
+        echo 'Soy una puerta de madera';
     }
 }
 
-class IronDoor implements Door {
-    public function getDescription() {
-        echo 'I am an iron door';
+class PuertaMetal implements Puerta {
+    public function getDescripcion() {
+        echo 'Soy puerta de metal';
     }
 }
 ```
-Then we have some fitting experts for each door type
+Entonces tenemos algun experto para tipo de puerta
 
 ```php
-interface DoorFittingExpert {
-    public function getDescription();
+interface ExpertoInstalacionPuerta {
+    public function getDescripcion();
 }
 
-class Welder implements DoorFittingExpert {
-    public function getDescription() {
-        echo 'I can only fit iron doors';
+class Soldador implements ExpertoInstalacionPuerta {
+    public function getDescripcion() {
+        echo 'Solo puedo con puertas de metal';
     }
 }
 
-class Carpenter implements DoorFittingExpert {
-    public function getDescription() {
-        echo 'I can only fit wooden doors';
+class Carpintero implements ExpertoInstalacionPuerta {
+    public function getDescripcion() {
+        echo 'Solamente puedo con puertas de madera';
     }
 }
 ```
 
 Now we have our abstract factory that would let us make family of related objects i.e. wooden door factory would create a wooden door and wooden door fitting expert and iron door factory would create an iron door and iron door fitting expert
 ```php
-interface DoorFactory {
-    public function makeDoor() : Door;
-    public function makeFittingExpert() : DoorFittingExpert;
+interface FabricaPuerta {
+    public function hacerPuerta() : Puerta;
+    public function HacerExperto() : ExpertoInstalacionPuerta;
 }
 
-// Wooden factory to return carpenter and wooden door
-class WoodenDoorFactory implements DoorFactory {
-    public function makeDoor() : Door {
-        return new WoodenDoor();
+// Fábrica de madera para volver carpintero y puerta de madera
+class FabricaPuertaMadera implements FabricaPuerta {
+    public function hacerPuerta() : Puerta {
+        return new PuertaMadera();
     }
 
-    public function makeFittingExpert() : DoorFittingExpert{
-        return new Carpenter();
+    public function HacerExperto() : ExpertoInstalacionPuerta{
+        return new Carpintero();
     }
 }
 
-// Iron door factory to get iron door and the relevant fitting expert
-class IronDoorFactory implements DoorFactory {
-    public function makeDoor() : Door {
-        return new IronDoor();
+// Fábrica de puerta de hierro para obtener la puerta de hierro y el experto adecuado montaje
+class FabricaPuertaMetal implements FabricaPuerta {
+    public function hacerPuerta() : Puerta {
+        return new PuertaMetal();
     }
 
-    public function makeFittingExpert() : DoorFittingExpert{
-        return new Welder();
+    public function HacerExperto() : ExpertoInstalacionPuerta{
+        return new Soldador();
     }
 }
 ```
-And then it can be used as
+Y luego se puede utilizar como
 ```php
-$woodenFactory = new WoodenDoorFactory();
+$FabricaMadera = new FabricaPuertaMadera();
 
-$door = $woodenFactory->makeDoor();
-$expert = $woodenFactory->makeFittingExpert();
+$puerta = $FabricaMadera->hacerPuerta();
+$experto = $FabricaMadera->HacerExperto();
 
-$door->getDescription();  // Output: I am a wooden door
-$expert->getDescription(); // Output: I can only fit wooden doors
+$puerta->getDescripcion();  // Output: Soy una puerta de madera
+$experto->getDescriction(); // Output: Solo puedo con puertas de madera
 
-// Same for Iron Factory
-$ironFactory = new IronDoorFactory();
+// Lo mismo para la fabrica de metal
+$FabricaMetal = new FabricaPuertaMetal();
 
-$door = $ironFactory->makeDoor();
-$expert = $ironFactory->makeFittingExpert();
+$puerta = $FabricaMetal->hacerPuerta();
+$experto = $FabricaMetal->HacerExperto();
 
-$door->getDescription();  // Output: I am an iron door
-$expert->getDescription(); // Output: I can only fit iron doors
+$puerta->getDescripcion();  // Output: Soy una puerta de madera
+$experto->getDescripcion(); // Output: Solo puedo con puertas de metal
 ```
 
-As you can see the wooden door factory has encapsulated the `carpenter` and the `wooden door` also iron door factory has encapsulated the `iron door` and `welder`. And thus it had helped us make sure that for each of the created door, we do not get a wrong fitting expert.   
+Como puedes ver la fabrica de madera a encapsulado al `carpintero` y la `puerta de madera`  también  la fabrica de metal a encapulado la `puerta de metal` y el `soldador`.Y por lo tanto, nos ayudó a asegurarnos de que para cada una de las puertas creadas, no recibiremos un experto  incorrecto.   
 
-**When to use?**
+**¿Cuando Usarlo?**
 
-When there are interrelated dependencies with not-that-simple creation logic involved
+Cuando hay dependencias interrelacionadas con la lógica de creación. 
 
 👷 Builder
 --------------------------------------------
-Real world example
-> Imagine you are at Hardee's and you order a specific deal, lets say, "Big Hardee" and they hand it over to you without *any questions*; this is the example of simple factory. But there are cases when the creation logic might involve more steps. For example you want a customized Subway deal, you have several options in how your burger is made e.g what bread do you want? what types of sauces would you like? What cheese would you want? etc. In such cases builder pattern comes to the rescue.
+Ejemplo del mundo real
+> Imagina que esta en un  Hardee's Y ordena una comida especifica, digamos, "Big Hardee" y te lo entregan  *sin ninguna pregunta*; este es un ejemplo de simple factory. Pero hay casos en lo que la lògica puede implicar mas pasos. Por ejemplo si quieres personalizar su orden, usted tiene varias opciones de como sera hecha su hamburguesa ejemplo ¿Que pan quiere? ¿Que tipo de salsa le gustaría? ¿Que queso quiere? etc. En tales casos el  builder pattern viene al rescate.
 
-In plain words
-> Allows you to create different flavors of an object while avoiding constructor pollution. Useful when there could be several flavors of an object. Or when there are a lot of steps involved in creation of an object.
+En simples palabras
+> Permite crear diferentes sabores de un objeto evitando la contaminación del constructor. Útil cuando podría haber varios sabores de un objeto. O cuando hay un montón de pasos involucrados en la creación de un objeto.
  
-Wikipedia says
-> The builder pattern is an object creation software design pattern with the intentions of finding a solution to the telescoping constructor anti-pattern.
+Wikipedia dice
+>El patrón constructor es un patrón de diseño de software de creación de objetos con la intención de encontrar una solución al anti-patrón del constructor telescópico.
 
-Having said that let me add a bit about what telescoping constructor anti-pattern is. At one point or the other we have all seen a constructor like below:
+Dicho esto permitanme añadir un poco acerca de lo que es el constructor en el patròn telescopico.Alguna vez todos hemos visto un constructor como el de abajo:
  
 ```php
-public function __construct($size, $cheese = true, $pepperoni = true, $tomato = false, $lettuce = true) {
+public function __construct($tamano, $queso = true, $pepperoni = true, $tomate = false, $lechuga = true) {
 }
 ```
 
-As you can see; the number of constructor parameters can quickly get out of hand and it might become difficult to understand the arrangement of parameters. Plus this parameter list could keep on growing if you would want to add more options in future. This is called telescoping constructor anti-pattern.
+Como puedes ver; El número de parámetros del constructor puede salirse de las manos y podría llegar a ser difícil de entender los parámetros. Además, esta lista de parámetros podría seguir creciendo si desea añadir más opciones en el futuro. Esto se llama constructor anti-patrón telescópico .
 
-**Programmatic Example**
+**Ejemplo de Programación**
 
-The sane alternative is to use the builder pattern. First of all we have our burger that we want to make
+La alternativa sana es usar el builder pattern. Primero que todo tenemos la hamburguesa que queremos hacer
 
 ```php
-class Burger {
-    protected $size;
+class Hamburguesa {
+    protected $tamano;
 
-    protected $cheese = false;
+    protected $queso = false;
     protected $pepperoni = false;
-    protected $lettuce = false;
-    protected $tomato = false;
+    protected $lecnuga = false;
+    protected $tomate = false;
     
-    public function __construct(BurgerBuilder $builder) {
-        $this->size = $builder->size;
-        $this->cheese = $builder->cheese;
+    public function __construct(HamburguesaBuilder $builder) {
+        $this->tamano = $builder->tamano;
+        $this->queso = $builder->queso;
         $this->pepperoni = $builder->pepperoni;
-        $this->lettuce = $builder->lettuce;
-        $this->tomato = $builder->tomato;
+        $this->lechuga = $builder->lechuga;
+        $this->tomate = $builder->tomate;
     }
 }
 ```
 
-And then we have the builder
+Y luego tenemos el builder
 
 ```php
-class BurgerBuilder {
-    public $size;
+class HamburguesaBuilder {
+    public $tamano;
 
-    public $cheese = false;
+    public $queso = false;
     public $pepperoni = false;
-    public $lettuce = false;
-    public $tomato = false;
+    public $lechuga = false;
+    public $tomate = false;
 
-    public function __construct(int $size) {
-        $this->size = $size;
+    public function __construct(int $tamano) {
+        $this->tamano = $tamano;
     }
     
-    public function addPepperoni() {
+    public function agregarPepperoni() {
         $this->pepperoni = true;
         return $this;
     }
     
-    public function addLettuce() {
-        $this->lettuce = true;
+    public function agregarLechuga() {
+        $this->lechuga = true;
         return $this;
     }
     
-    public function addCheese() {
-        $this->cheese = true;
+    public function agregarQueso() {
+        $this->queso = true;
         return $this;
     }
     
-    public function addTomato() {
-        $this->tomato = true;
+    public function garegarTomate() {
+        $this->tomate = true;
         return $this;
     }
     
-    public function build() : Burger {
-        return new Burger($this);
+    public function build() : Hamburguesa {
+        return new Hamburguesa($this);
     }
 }
 ```
-And then it can be used as:
+y se puede utilizar:
 
 ```php
-$burger = (new BurgerBuilder(14))
-                    ->addPepperoni()
-                    ->addLettuce()
-                    ->addTomato()
+$hamburguesa = (new HamburguesaBuilder(14))
+                    ->agregarPepperoni()
+                    ->agregarLechuga()
+                    ->agregarTomate()
                     ->build();
 ```
 
-**When to use?**
+**¿Cuando utilizarlo?**
 
-When there could be several flavors of an object and to avoid the constructor telescoping. The key difference from the factory pattern is that; factory pattern is to be used when the creation is a one step process while builder pattern is to be used when the creation is a multi step process.
+Cuando podría haber varios sabores de un objeto y evitar que el constructor se telescopice, la diferencia con factory pattern es que el pattern factory crea un objeto en un solo paso, mientras que builder factory es un proceso de varios pasos.
 
 🐑 Prototype
 ------------
